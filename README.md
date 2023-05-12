@@ -40,9 +40,11 @@ $ npm run start
 
 # watch mode
 $ npm run start:dev
+$ npm run start:dev_win
 
 # production mode
 $ npm run start:prod
+$ npm run start:prod_win
 ```
 
 ## Test
@@ -58,15 +60,9 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Description
+This project focuses on tournament platform for anything. It allows you to create tournaments as a solo player 
+or as a team and compete having a real-time table.
 
 ## License
 
