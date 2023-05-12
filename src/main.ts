@@ -21,6 +21,6 @@ async function bootstrap() {
 
   return app
     .useGlobalPipes(validationPipe)
-    .listen(configService.get('PORT'), configService.get('HOST'));
+    .listen(process.env.PORT || configService.get('PORT'), configService.get('HOST'));
 }
 bootstrap();
