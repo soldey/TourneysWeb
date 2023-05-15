@@ -19,9 +19,11 @@ async function bootstrap() {
     },
   });
 
-  app.setGlobalPrefix(configService.get('PREFIX'));
+  // app.setGlobalPrefix(configService.get('PREFIX'));
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.setBaseViewsDir(join(__dirname, '..', 'views'));
+  app.setViewEngine('hbs');
 
   return app
     .useGlobalPipes(validationPipe)
