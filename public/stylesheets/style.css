@@ -1,0 +1,242 @@
+.nav {
+    padding: 1rem;
+    background: #100e25;
+    color: white;
+}
+
+.nav__wrapper {
+    max-width: 1400px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav__section {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.nav__dropdown_wrapper {
+    display: none;
+}
+
+.nav__dropdown {
+    display: none;
+}
+
+.nav__button-droptoggle {
+    display: none;
+}
+
+.nav__img-drop {
+    width: 3rem;
+}
+
+.nav__button,
+.nav__button-drop {
+    border-radius: 4px;
+    background: rgba(114,95,255,0.21);
+    color: white;
+    padding: .25rem .5rem;
+    font-size: 1.25rem;
+}
+
+.nav__button:hover {
+    background: rgba(114,95,255,0.4);
+}
+
+.nav__search {
+    border-radius: 4px;
+    background: rgba(114,95,255,0.21);
+    padding: .25rem .5rem;
+    font-size: 1rem;
+}
+
+.nav__button-action {
+    border: 2px solid #ffaa27;
+    border-radius: 4px;
+    padding: .5rem;
+    background: rgba(0, 0, 0, 0);
+    color: white;
+}
+
+.nav__logo {
+
+}
+
+main {
+    background-image: url("../images/background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center top;
+    min-height: 93vh;
+    margin: 0;
+}
+
+.content {
+    max-width: 1400px;
+    padding: 0 1.5rem;
+    margin: 0 auto;
+}
+
+.content__section {
+}
+
+.content__header {
+    padding: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 400px;
+    background: rgba(16, 14, 37, 0.4);
+    color: white;
+    text-align: center;
+}
+
+.content__div {
+    max-width: 400px;
+    display: flex;
+    justify-content: space-between;
+    margin-left: auto;
+    margin-right: auto;
+    padding: .5rem 2rem;
+}
+
+.content__button {
+    border: 2px solid #ffaa27;
+    border-radius: 4px;
+    padding: .5rem;
+    background: rgba(0, 0, 0, 0);
+    color: white;
+    filter: drop-shadow(0 0 0.75rem red);
+}
+
+.content__button:hover {
+    background: rgba(114,95,255,0.4);
+    color: white;
+    filter: drop-shadow(0 0 0.75rem rgba(114, 95, 255, 1));
+}
+
+.content__bracket {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    padding: 4rem;
+}
+
+.content__bracket-filler {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.footer {
+    background: #100e25;
+}
+
+.footer__section {
+    max-width: 1000px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    color: white;
+}
+
+.footer__ul {
+    list-style-type: none;
+    margin-left: -2.5rem;
+}
+
+.footer__a {
+    transition: 200ms all ease-in-out;
+    color: #a40c96;
+}
+
+.footer__a:hover {
+    color: #d30cc5
+}
+
+.footer__logo {
+
+}
+
+.footer__loadtime {
+    font-family: fantasy;
+    color: white;
+}
+
+.show {
+    display: block;
+}
+
+@media screen and (max-width: 1280px) {
+    .nav__search {
+        display: none;
+    }
+
+    .content__bracket-filler {
+        max-width: 400px
+    }
+
+    .nav__logo {
+        display: none;
+    }
+
+    .nav__button {
+        display: none;
+    }
+
+    .nav__button-droptoggle {
+        display: inline-block;
+        border-radius: 5px;
+        width: 2rem;
+        height: 2rem;
+        background: #cad0ff;
+    }
+
+    .nav__img-drop {
+        object-fit: cover;
+        width: 3rem;
+        margin-left: -.85rem;
+        margin-top: -.6rem;
+    }
+
+    .nav__button-drop {
+        font-size: .75rem;
+        display: block;
+        background: whitesmoke;
+        color: black;
+        min-width: 120px;
+    }
+
+    .nav__button-drop:hover, .nav__button-drop:focus {
+        background: #cad0ff;
+    }
+
+    .nav__dropdown_wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .nav__dropdown {
+        display: none;
+        position: absolute;
+        background-color: whitesmoke;
+        border-radius: 4px;
+        min-width: 120px;
+        z-index: 1;
+    }
+
+    .nav__button-action {
+        padding: .25rem;
+        border: 1px solid #ffaa27;
+        border-radius: 3px;
+    }
+
+    .show {
+        display: block;
+    }
+}
