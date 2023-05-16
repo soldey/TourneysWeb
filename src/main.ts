@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 
 import { ConfigService } from './config';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -24,6 +25,16 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('hbs');
+
+  if (configService.get('SWAGGER_MODULE')) {
+    const config = new DocumentBuilder()
+      .setVersion(configService.get('npm_package_version'))
+      .setTitle(configService.get('npm_package_name'))
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('/api/v1', app, document);
+  }
 
   return app
     .useGlobalPipes(validationPipe)
