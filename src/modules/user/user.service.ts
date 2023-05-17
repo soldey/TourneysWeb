@@ -30,7 +30,10 @@ export class UserService {
     conditions: Partial<UserEntity>,
   ): Promise<UserEntity> {
     return this.userEntityRepository
-      .findOneByOrFail(conditions as FindOptionsWhere<UserEntity>)
+      .findOneOrFail({
+        where: conditions as unknown as FindOptionsWhere<UserEntity>,
+        relations: ['teams']
+      })
       .catch(() => {
         throw new NotFoundException(ErrorTypeEnum.USER_NOT_FOUND);
       });

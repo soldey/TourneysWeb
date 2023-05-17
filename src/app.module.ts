@@ -5,6 +5,7 @@ import { CommonModule } from './common/common.module';
 import { DatabaseModule } from './database';
 import { UserModule } from './modules/user';
 import { AuthModule } from './modules/auth';
+import { TeamModule } from './modules/team';
 
 @Module({
   imports: [
@@ -12,8 +13,8 @@ import { AuthModule } from './modules/auth';
     ConfigModule,
     IndexModule,
     DatabaseModule,
-    UserModule,
     AuthModule,
+    TeamModule,
   ],
 })
 export class AppModule {}
