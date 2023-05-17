@@ -12,7 +12,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const validationPipe = new ValidationPipe({
     forbidNonWhitelisted: true,
-    forbidUnknownValues: true,
+    forbidUnknownValues: false,
     whitelist: true,
     transform: true,
     transformOptions: {
@@ -30,6 +30,7 @@ async function bootstrap() {
     const config = new DocumentBuilder()
       .setVersion(configService.get('npm_package_version'))
       .setTitle(configService.get('npm_package_name'))
+      .addBearerAuth()
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
