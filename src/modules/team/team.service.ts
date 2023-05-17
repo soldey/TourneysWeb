@@ -79,7 +79,6 @@ export class TeamService {
   public async selectOneRelation(
     conditions: Partial<TeamRelationEntity>
   ): Promise<TeamRelationEntity> {
-    console.log(1121)
     return this.teamRelationEntityRepository
       .createQueryBuilder('relation')
       .leftJoin('relation.team', 'team')
@@ -184,7 +183,6 @@ export class TeamService {
   ): Promise<string[]> {
     const relations = entity.members;
     const members: string[] = [];
-    console.log(relations);
     for (const relation of relations) {
       const relationEntity = await this.selectOneRelation(relation);
       members.push(relationEntity.user.id);
