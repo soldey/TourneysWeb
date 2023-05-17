@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { RolesEnum } from '../../../common/enums/roles.enum';
 import { IsEmail, IsEnum, Matches, MaxLength, MinLength } from 'class-validator';
 
-export const pwdRegExp = '^(?=.*[0-9])(?=.*[a-z]).{8,32}$';
+export const pwdRegExp = '^(?=.*[0-9])(?=.*[a-z]).{6,32}$';
 
 export class CreateUserDto {
   @IsEmail()

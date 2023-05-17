@@ -1,12 +1,29 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { UserService } from './user.service';
 import { SelectManyUsersDto } from './dto/select-many-users.dto';
+import { Roles } from '../../common/decorators';
+import { RolesEnum } from '../../common/enums/roles.enum';
+import { JwtAuthGuard, RolesGuard } from '../auth/guards';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('user')
-@Controller('user')
+@Controller('api/v1/user')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private readonly userService: UserService) {
   }
@@ -19,19 +36,35 @@ export class UserController {
   }
 
   @Get()
+  @Roles(RolesEnum.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   public async selectAll(@Query() options: SelectManyUsersDto) {
     return this.userService.selectMany(options);
   }
 
   @Get(':id')
-  public async selectOne(@Param('id') id: string) {
-    return this.userService.selectOne({ where: { id: id } });
+  @Roles(RolesEnum.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  public async selectOneById(@Param('id') id: string) {
+    return this.userService.selectOne({ id: id });
+  }
+
+  @Patch(':id')
+  @Roles(RolesEnum.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  public async updateOne(
+    @Param('id') id: string,
+    @Body() data: UpdateUserDto,
+  ): Promise<UserEntity> {
+    return this.userService.updateOne({ id: id }, data);
   }
 
   @Delete(':id')
+  @Roles(RolesEnum.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   public async deleteOne(
     @Param('id') id: string
   ): Promise<UserEntity> {
-    return this.userService.deleteOne({ where: { id: id } });
+    return this.userService.deleteOne({ id: id });
   }
 }
