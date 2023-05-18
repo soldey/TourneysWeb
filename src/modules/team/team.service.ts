@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TeamEntity } from './entities/team.entity';
-import { FindOptionsWhere, Repository, SaveOptions } from 'typeorm';
+import { FindOptionsWhere, RemoveOptions, Repository, SaveOptions } from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { ErrorTypeEnum } from '../../common/enums/error-type.enum';
 import { SelectOneTeamDto } from './dto/select-one-team.dto';
@@ -34,9 +34,9 @@ export class TeamService {
 
   public async createOne(
     entityLike: CreateTeamDto,
+    captain: UserEntity,
     options: SaveOptions = { transaction: false },
   ): Promise<TeamEntity> {
-    const captain = await this.userService.selectOne({ id: entityLike.captain });
     const team = await this.teamEntityRepository.manager.transaction(async () => {
       const existingTeam = await this.selectOne({ name: entityLike.name }).catch(() => {
         // skip
@@ -84,7 +84,7 @@ export class TeamService {
       .leftJoin('relation.team', 'team')
       .leftJoin('relation.user', 'user')
       .where('relation.id = :relationId', { relationId: conditions.id })
-      .select(['relation.id', 'user.id'])
+      .select(['relation.id', 'team.id', 'user.id'])
       .getOneOrFail()
       .catch(() => {
         throw new NotFoundException(ErrorTypeEnum.RELATION_NOT_FOUND);
@@ -101,7 +101,7 @@ export class TeamService {
       .leftJoin('teamRelation.user', 'user')
       .where('team.id = :teamId', { teamId: conditions.id })
       .andWhere('user.id = :userId', { userId: user.id })
-      .select(['team.id', 'user.id'])
+      .select(['teamRelation.id', 'team.id', 'user.id'])
       .getOneOrFail()
       .catch(() => {
         throw new NotFoundException(ErrorTypeEnum.PLAYER_NOT_IN_A_TEAM);
@@ -118,10 +118,10 @@ export class TeamService {
           'members',
           'captain'
         ],
-        loadEagerRelations: false,
+        loadEagerRelations: true,
       }).catch(() => {
         throw new NotFoundException(ErrorTypeEnum.TEAM_NOT_FOUND);
-      })
+      });
   }
 
   public async selectAll(
@@ -206,5 +206,29 @@ export class TeamService {
     conditions: Partial<TeamEntity>
   ): Promise<TeamEntity> {
     return this.updateOne(conditions, { isDeleted: true });
+  }
+
+  public async deleteOneRelation(
+    conditions: Partial<TeamRelationEntity>,
+    options: RemoveOptions = { transaction: false }
+  ): Promise<TeamRelationEntity> {
+    return this.teamRelationEntityRepository.manager.transaction(async () => {
+      const entity = await this.selectOneRelation(conditions);
+      return this.teamRelationEntityRepository.remove(entity, options).catch(() => {
+        throw new NotFoundException(ErrorTypeEnum.RELATION_NOT_FOUND);
+      });
+    });
+  }
+
+  public async leaveTeam(
+    conditions: Partial<TeamEntity>,
+    user: UserEntity,
+  ): Promise<TeamRelationEntity> {
+    const entity = await this.selectOneRelationByBoth(conditions, user).catch(() => {
+      throw new ForbiddenException(ErrorTypeEnum.PLAYER_IN_ANOTHER_TEAM);
+    });
+    const team = await this.selectOne(conditions);
+    const members = await this.getTeamMembers(team);
+    return this.deleteOneRelation(entity);
   }
 }

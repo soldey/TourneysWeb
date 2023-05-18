@@ -21,7 +21,6 @@ import { SelectManyTeamsDto } from './dto/select-many-teams.dto';
 import { PaginationTeamsDto } from './dto/pagination-teams.dto';
 import { JwtAuthGuard, RolesGuard } from '../auth/guards';
 import { ID } from '../../common/dto/id.dto';
-import { SelectOneTeamDto } from './dto/select-one-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { UserEntity } from '../user/entities/user.entity';
 import { ApplyToTeamDto } from './dto/apply-to-team.dto';
@@ -33,10 +32,13 @@ export class TeamController {
   constructor(private readonly teamService: TeamService) {}
 
   @Post()
+  @Roles(RolesEnum.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   public async createOne(
-    @Body() data: CreateTeamDto
+    @Body() data: CreateTeamDto,
+    @User() captain: UserEntity,
   ): Promise<TeamEntity> {
-    return this.teamService.createOne(data);
+    return this.teamService.createOne(data, captain);
   }
 
   @Get()

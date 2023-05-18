@@ -3,9 +3,8 @@ import { ConfigModule } from './config';
 import { IndexModule } from './modules/index/index.module';
 import { CommonModule } from './common/common.module';
 import { DatabaseModule } from './database';
-import { UserModule } from './modules/user';
 import { AuthModule } from './modules/auth';
-import { TeamModule } from './modules/team';
+import { TournamentModule } from './modules/tournament';
 
 @Module({
   imports: [
@@ -14,7 +13,7 @@ import { TeamModule } from './modules/team';
     IndexModule,
     DatabaseModule,
     AuthModule,
-    TeamModule,
+    TournamentModule,
   ],
 })
 export class AppModule {}
