@@ -9,7 +9,8 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { CreateUserDto, UserService } from '../user';
+import { UserService } from '../user/user.service';
+import { CreateUserDto} from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { ChangePasswordDto, CredentialsDto, JwtResponseDto } from './dto';
 import { JwtAuthGuard } from './guards';

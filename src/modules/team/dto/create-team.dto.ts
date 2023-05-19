@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional, PickType } from '@nestjs/swagger';
-import { TeamEntity } from '../entities/team.entity';
 import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateTeamDto {

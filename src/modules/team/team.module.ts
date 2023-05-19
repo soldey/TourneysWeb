@@ -4,7 +4,7 @@ import { TeamEntity } from './entities/team.entity';
 import { TeamRelationEntity } from './entities/team-relation.entity';
 import { TeamController } from './team.controller';
 import { TeamService } from './team.service';
-import { UserModule } from '../user';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [

@@ -2,8 +2,11 @@ import { ApiTags } from '@nestjs/swagger';
 import {
   Body,
   ClassSerializerInterceptor,
-  Controller, Delete,
-  Get, Param, Patch,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -20,6 +23,8 @@ import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { SelectManyTournamentsDto } from './dto/select-many-tournaments.dto';
 import { PaginationTournamentsDto } from './dto/pagination-tournaments.dto';
 import { UpdateTournamentDto } from './dto/update-tournament.dto';
+import { TournamentParticipantEntity } from './entities/tournament-participant.entity';
+import { ApplyToTournamentDto } from './dto/apply-to-tournament.dto';
 
 @ApiTags('tournament')
 @Controller('api/v1/tournament')
@@ -38,7 +43,7 @@ export class TournamentController {
   }
 
   @Get()
-  @Roles(RolesEnum.ADMIN)
+  @Roles(RolesEnum.USER)
   @UseGuards(RolesGuard)
   public async selectAll(
     @Query() data: SelectManyTournamentsDto
@@ -73,5 +78,17 @@ export class TournamentController {
     @User() user: UserEntity,
   ): Promise<TournamentEntity> {
     return this.tournamentService.deleteOne(conditions);
+  }
+
+  @Post('apply')
+  @Roles(RolesEnum.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  public async applyToTournament(
+    @Body() data: ApplyToTournamentDto,
+    @User() user: UserEntity,
+  ): Promise<TournamentParticipantEntity> {
+    if (data.type == "team") return this.tournamentService.applyToTournament({ id: data.id }, undefined, { name: data.target });
+    else return this.tournamentService.applyToTournament({ id: data.id }, user, undefined);
+
   }
 }

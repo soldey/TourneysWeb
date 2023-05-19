@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '../../config';
-import { CreateUserDto, UserService } from '../user';
+import { UserService } from '../user/user.service';
+import { CreateUserDto} from '../user/dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Chance } from 'chance';
 import { UserEntity } from '../user/entities/user.entity';
@@ -77,6 +78,18 @@ export class AuthService {
         return this.generateToken(updatedResult);
       }
     })
+  }
+
+  public retrieveUser(token: string): Promise<UserEntity> {
+    if (!token) return null;
+    const payload = this.jwtService.verify(
+      token,
+      {
+        secret: this.configService.get('PASSPORT_SECRET')
+      }
+    )
+    console.log(payload);
+    return this.userService.selectOne({ id: payload.id });
   }
 
   public async validateUser(data: ValidateUserDto): Promise<UserEntity> {

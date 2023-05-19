@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
-import { FindOneOptions, FindOptionsWhere, Repository, SaveOptions } from 'typeorm';
+import { FindOptionsWhere, Repository, SaveOptions } from 'typeorm';
 import { ErrorTypeEnum } from '../../common/enums/error-type.enum';
 import { PaginationUsersDto } from './dto/pagination-users.dto';
 import { SelectManyUsersDto } from './dto/select-many-users.dto';

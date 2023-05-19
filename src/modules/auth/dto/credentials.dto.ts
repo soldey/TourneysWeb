@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/swagger';
-import { CreateUserDto } from '../../user';
+import { CreateUserDto } from '../../user/dto/create-user.dto';
 
 /**
  * [description]

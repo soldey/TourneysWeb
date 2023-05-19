@@ -1,4 +1,8 @@
-import { PickType } from '@nestjs/swagger';
-import { TeamEntity } from '../entities/team.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
-export class ApplyToTeamDto extends PickType(TeamEntity, ['name']) {}
+export class ApplyToTeamDto {
+  @IsString()
+  @ApiProperty({ type: String, example: "Team Spirit" })
+  public readonly name: string;
+}

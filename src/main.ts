@@ -7,6 +7,8 @@ import { ConfigService } from './config';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import * as cookieParser from 'cookie-parser';
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
@@ -20,7 +22,12 @@ async function bootstrap() {
     },
   });
 
-  // app.setGlobalPrefix(configService.get('PREFIX'));
+  app.enableCors({
+    credentials: configService.get('CORS_CREDENTIALS'),
+    origin: configService.get('CORS_ORIGIN'),
+  });
+
+  app.use(cookieParser());
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));

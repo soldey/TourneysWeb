@@ -1,10 +1,11 @@
 import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TournamentEntity } from './entities/tournament.entity';
+import { TournamentEntity, TournamentTypeEnum } from './entities/tournament.entity';
 import { FindOptionsWhere, RemoveOptions, Repository, SaveOptions } from 'typeorm';
 import { TournamentParticipantEntity } from './entities/tournament-participant.entity';
-import { TeamEntity, TeamService } from '../team';
-import { UserService } from '../user';
+import { TeamService } from '../team/team.service';
+import { TeamEntity } from '../team/entities/team.entity';
+import { UserService } from '../user/user.service';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { UserEntity } from '../user/entities/user.entity';
 import { ErrorTypeEnum } from '../../common/enums/error-type.enum';
@@ -34,9 +35,10 @@ export class TournamentService {
       const existingTournament = await this.selectOne({ name: entityLike.name }).catch(() => {
         // skip
       });
+      if (existingTournament) throw new ConflictException(ErrorTypeEnum.TOURNAMENT_ALREADY_EXISTS);
 
       const entity = this.tournamentEntityRepository.create({
-        name: entityLike.name,
+        ...entityLike,
         host: host,
       });
 
@@ -53,9 +55,11 @@ export class TournamentService {
     options: SaveOptions = { transaction: false }
   ): Promise<TournamentParticipantEntity> {
     return this.tournamentParticipantRepository.manager.transaction(async () => {
-      const existingParticipant = this.selectOneParticipantByBoth(conditions, user, team).catch(() => {
+      const existingParticipant = await this.selectOneParticipantByBoth(conditions, user, team).catch(() => {
         // skip
       });
+      console.log(existingParticipant);
+      if (existingParticipant) throw new ConflictException(ErrorTypeEnum.PARTICIPANT_ALREADY_EXISTS);
       let entity = undefined;
       if (user)
         entity = this.tournamentParticipantRepository.create(
@@ -178,5 +182,23 @@ export class TournamentService {
         throw new NotFoundException(ErrorTypeEnum.RELATION_NOT_FOUND);
       });
     });
+  }
+
+  public async applyToTournament(
+    conditions: Partial<TournamentEntity>,
+    user?: UserEntity,
+    team?: Partial<TeamEntity>,
+  ): Promise<TournamentParticipantEntity> {
+    const tournamentEntity = await this.selectOne(conditions);
+    if (user && tournamentEntity.type == TournamentTypeEnum.TEAM)
+      throw new ConflictException(ErrorTypeEnum.APPLICATION_OF_WRONG_TYPE)
+    if (team && tournamentEntity.type == TournamentTypeEnum.SOLO)
+      throw new ConflictException(ErrorTypeEnum.APPLICATION_OF_WRONG_TYPE);
+    if (team) team = await this.teamService.selectOne(team);
+    const relation = await this.selectOneParticipantByBoth(conditions, user, team).catch(() => {
+      // skip
+    });
+    console.log(relation)
+    return this.createOneParticipant(conditions, user, team);
   }
 }

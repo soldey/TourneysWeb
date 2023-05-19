@@ -11,14 +11,12 @@ import { TeamEntity } from './entities/team.entity';
 import { FindOptionsWhere, RemoveOptions, Repository, SaveOptions } from 'typeorm';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { ErrorTypeEnum } from '../../common/enums/error-type.enum';
-import { SelectOneTeamDto } from './dto/select-one-team.dto';
 import { SelectManyTeamsDto } from './dto/select-many-teams.dto';
 import { PaginationTeamsDto } from './dto/pagination-teams.dto';
 import { UserEntity } from '../user/entities/user.entity';
 import { RolesEnum } from '../../common/enums/roles.enum';
 import { TeamRelationEntity } from './entities/team-relation.entity';
-import { UserService } from '../user';
-import { instanceToPlain } from 'class-transformer';
+import { UserService } from '../user/user.service';
 import { UpdateTeamDto } from './dto';
 
 @Injectable()
@@ -41,6 +39,7 @@ export class TeamService {
       const existingTeam = await this.selectOne({ name: entityLike.name }).catch(() => {
         // skip
       });
+      if (existingTeam) throw new ConflictException(ErrorTypeEnum.TEAM_ALREADY_EXISTS);
 
       const entity = this.teamEntityRepository.create({
           name: entityLike.name,
@@ -61,9 +60,11 @@ export class TeamService {
     options: SaveOptions = { transaction: false },
   ): Promise<TeamRelationEntity> {
     return this.teamRelationEntityRepository.manager.transaction(async () => {
-      const existingRelation = this.selectOneRelationByBoth(conditions, { id: user.id }).catch(() => {
+      const existingRelation = await this.selectOneRelationByBoth(conditions, { id: user.id }).catch(() => {
         // skip
       });
+      if (existingRelation) throw new ConflictException(ErrorTypeEnum.PLAYER_ALREADY_IN_THIS_TEAM);
+
       const entity = this.teamRelationEntityRepository.create(
         {
           team: await this.selectOne({ id: conditions.id }),
@@ -190,12 +191,39 @@ export class TeamService {
     return members;
   }
 
+  public async getTeamsByUser(
+    entity: Partial<UserEntity>
+  ): Promise<string[]> {
+    const user = await this.userService.selectOne({ id: entity.id });
+    const relations = user.teams;
+    const teams: string[] = [];
+    for (const relation of relations) {
+      const relationEntity = await this.selectOneRelation(relation);
+      teams.push(relationEntity.team.id);
+    }
+    return this.formTeamsByUser(teams);
+  }
+
+  public async formTeamsByUser(
+    data: string[]
+  ): Promise<any> {
+    const output = { teams: [] }
+    for (const team of data) {
+      const curTeam = await this.selectOne({ id: team });
+      output.teams.push(curTeam);
+    }
+    return output;
+  }
+
   public async applyToTeam(
     name: string,
     user: UserEntity,
   ): Promise<TeamEntity> {
     const team = await this.selectOne({ name: name })
+    console.log(team)
     const members = await this.getTeamMembers(team);
+    console.log(members);
+    console.log(members.indexOf(user.id));
     if (members.indexOf(user.id) != -1)
       throw new ConflictException(ErrorTypeEnum.PLAYER_ALREADY_IN_THIS_TEAM);
     await this.createOneRelation(team, user);

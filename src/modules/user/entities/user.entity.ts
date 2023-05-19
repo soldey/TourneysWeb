@@ -15,8 +15,7 @@ import { RolesEnum } from '../../../common/enums/roles.enum';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { StatusEnum } from '../../../common/enums/status.enum';
-import { TeamEntity } from '../../team/entities/team.entity';
-import { TeamRelationEntity } from '../../team';
+import { TeamRelationEntity } from '../../team/entities/team-relation.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {

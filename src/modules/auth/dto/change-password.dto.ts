@@ -1,5 +1,5 @@
 import { Matches, MaxLength } from 'class-validator';
-import { pwdRegExp } from '../../user';
+import { pwdRegExp } from '../../user/dto/create-user.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ChangePasswordDto {

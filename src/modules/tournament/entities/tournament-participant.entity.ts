@@ -1,7 +1,7 @@
 import { BaseEntity, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from '../../user/entities/user.entity';
-import { TeamEntity } from '../../team';
+import { TeamEntity } from '../../team/entities/team.entity';
 import { TournamentEntity } from './tournament.entity';
 
 @Entity('tournament-participant')

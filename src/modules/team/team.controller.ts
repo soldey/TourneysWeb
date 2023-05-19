@@ -24,6 +24,7 @@ import { ID } from '../../common/dto/id.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { UserEntity } from '../user/entities/user.entity';
 import { ApplyToTeamDto } from './dto/apply-to-team.dto';
+import { TeamRelationEntity } from './entities/team-relation.entity';
 
 @ApiTags('team')
 @Controller('api/v1/team')
@@ -48,6 +49,15 @@ export class TeamController {
     @Query() data: SelectManyTeamsDto
   ): Promise<PaginationTeamsDto> {
     return this.teamService.selectAll(data);
+  }
+
+  @Get('mine')
+  @Roles(RolesEnum.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  public async selectByUser(
+    @User() user: UserEntity,
+  ): Promise<any> {
+    return this.teamService.getTeamsByUser(user);
   }
 
   @Get(':id')
@@ -87,5 +97,15 @@ export class TeamController {
     @User() user: UserEntity,
   ): Promise<TeamEntity> {
     return this.teamService.applyToTeam(data.name, user);
+  }
+
+  @Delete('leave/:id')
+  @Roles(RolesEnum.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  public async leaveTeam(
+    @Param('id') id: string,
+    @User() user: UserEntity
+  ): Promise<TeamRelationEntity> {
+    return this.teamService.leaveTeam({ id: id }, user);
   }
 }
