@@ -6,7 +6,7 @@ export const pwdRegExp = '^(?=.*[0-9])(?=.*[a-z]).{6,32}$';
 
 export class CreateUserDto {
   @IsEmail()
-  @ApiProperty({ type: String, example: "asd@d.com" })
+  @ApiProperty({ type: String, example: "admin@a.com" })
   public readonly email: string;
 
   @MaxLength(32)

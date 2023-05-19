@@ -62,6 +62,22 @@
     color: white;
 }
 
+.nav__button-logout {
+    border: 2px solid #ffaa27;
+    border-radius: 4px;
+    padding: .5rem;
+    background: rgba(0, 0, 0, 0);
+    color: white;
+}
+
+button {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
 .nav__logo {
 
 }

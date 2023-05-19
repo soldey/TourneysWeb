@@ -6,7 +6,7 @@ import {
   Column,
   AfterLoad,
   BeforeInsert,
-  BeforeUpdate, CreateDateColumn, UpdateDateColumn,
+  BeforeUpdate, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToMany, JoinColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
@@ -15,6 +15,7 @@ import { RolesEnum } from '../../../common/enums/roles.enum';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { StatusEnum } from '../../../common/enums/status.enum';
+import { TeamRelationEntity } from '../../team/entities/team-relation.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -61,6 +62,11 @@ export class UserEntity extends BaseEntity {
   @ApiProperty({ maxLength: 50 })
   @Column({ type: 'varchar', length: 50 })
   public readonly lastName: string;
+
+  @ApiProperty({ type: () => [String] })
+  @OneToMany(() => TeamRelationEntity, (teamRelation) => teamRelation.user)
+  @JoinColumn()
+  public readonly teams?: TeamRelationEntity[];
 
   /**
    * [description]

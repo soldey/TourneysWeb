@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { IndexController } from './index.controller';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [],
+  imports: [AuthModule],
   controllers: [IndexController],
   providers: [],
   exports: []
