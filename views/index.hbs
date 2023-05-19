@@ -36,7 +36,7 @@
         <div class="nav__section">
             {{#if isUserNull}}
             <a href="/login"><button class="nav__button-action">Login</button></a>
-            <a href="#"><button class="nav__button-action">Register</button></a>
+            <a href="/login"><button class="nav__button-action">Register</button></a>
             {{else}}
               <a href="/profile"><button class="nav__button-action">{{ user.firstName }}</button></a>
               <a href="#"><button class="nav__button-logout">Logout</button></a>
