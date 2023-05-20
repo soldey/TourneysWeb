@@ -25,8 +25,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Controller('api/v1/user')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
-  constructor(private readonly userService: UserService) {
-  }
+  constructor(
+    private readonly userService: UserService
+  ) {}
 
   @Post()
   public async createUser(

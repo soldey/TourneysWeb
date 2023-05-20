@@ -7,12 +7,14 @@ import { AuthModule } from './modules/auth/auth.module';
 import { TournamentModule } from './modules/tournament/tournament.module';
 import { APP_FILTER } from '@nestjs/core';
 import { NotFoundExceptionFilter } from './common/not-found-exception.filter';
+import { MonitorModule } from './modules/monitor/monitor.module';
 
 @Module({
   imports: [
     CommonModule,
     ConfigModule,
     IndexModule,
+    MonitorModule,
     DatabaseModule,
     AuthModule,
     TournamentModule,
