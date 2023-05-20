@@ -6,13 +6,13 @@
   <meta name="keywords" content="esports">
   <meta name="description" content="esports tournament generator">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="stylesheets/resets.css">
-  <link rel="stylesheet" href="stylesheets/t_style.css">
-  <script src="scripts/loading-time.js"></script>
-  <script src="scripts/dropdown-menu.js"></script>
+  <link rel="stylesheet" href='stylesheets/resets.css'>
+  <link rel="stylesheet" href='stylesheets/t_style.css'>
+  <script src='scripts/loading-time.js'></script>
+  <script src='scripts/dropdown-menu.js'></script>
   <script src='scripts/commons.js'></script>
-  <script src='scripts/index-logic.js'></script>
   <script src='scripts/authorization.js'></script>
+  <script src='scripts/index-logic.js'></script>
 </head>
 <body>
 <nav class="nav">
@@ -23,15 +23,27 @@
           <img class="nav__img-drop" src="images/dropdown.png" alt="dropdown">
         </button>
         <div id="dropdown" class="nav__dropdown">
-          <a href="/tournaments"><button class="nav__button-drop">Tournaments</button></a>
-          <a href="#"><button class="nav__button-drop">Events</button></a>
-          <a href="/statistics"><button class="nav__button-drop">Statistics</button></a>
+          <a href='/'>
+            <button class="nav__button-drop">Main</button>
+          </a>
+          <a href="#">
+            <button class="nav__button-drop">Events</button>
+          </a>
+          <a href="/statistics">
+            <button class="nav__button-drop">Statistics</button>
+          </a>
         </div>
       </div>
-      <a href="/"><img class="nav__logo" src="" alt="logo"></a>
-      <a href="/tournaments"><button class="nav__button">Tournaments</button></a>
-      <a href="#"><button class="nav__button">Events</button></a>
-      <a href="/statistics"><button class="nav__button">Statistics</button></a>
+      <a href='/'><img class="nav__logo" src="" alt="logo"></a>
+      <a href="/tournaments">
+        <button class="nav__button">Tournaments</button>
+      </a>
+      <a href="#">
+        <button class="nav__button">Events</button>
+      </a>
+      <a href="/statistics">
+        <button class="nav__button">Statistics</button>
+      </a>
       <input type="text" placeholder="Search..." class="nav__search">
     </div>
     <div class="nav__section">
@@ -46,17 +58,21 @@
   </div>
 </nav>
 <main>
-  <div class="content">
-    <section class="content__section">
-      <h2>Вступление в команду</h2>
-      <form id='team-form'>
-        <label for="team-name">Название команды:</label>
-        <input type="text" id="team-name" name="team-name">
+  <section class="content">
 
-        <input type="submit" value="Вступить в команду">
-      </form>
-    </section>
-  </div>
+    <h2>Статистика по эндпоинтам</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>№</th>
+        <th>Active Page</th>
+        <th>Calls</th>
+      </tr>
+      </thead>
+      <tbody id='stat-list'>
+      </tbody>
+    </table>
+  </section>
 </main>
 <footer class="footer">
   <section class="footer__section">
@@ -90,6 +106,6 @@
     <p class="footer__loadtime" id="loadtime">Oops</p>
   </section>
 </footer>
-<script src='scripts/apply-to-team.js'></script>
+<script src='scripts/load-stats.js'></script>
 </body>
 </html>
