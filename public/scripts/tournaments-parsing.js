@@ -34,12 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const tournaments_formData = new FormData(e.target);
         const values = Object.fromEntries(tournaments_formData);
-        if (!values.name) {
-            alert('Нет названия');
+        if (!values.login || !values.password) {
+            alert('Нет логина или пароля');
             return;
         }
-        values.owner = (await getUser())[0].name;
-        addTournamentToMarkup(values);
+        InitializeLogin(values);
     });
 
     dataContainer.addEventListener('DOMSubtreeModified', () => {
@@ -62,27 +61,33 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 })
 
-const addTournamentToMarkup = (Tournament) => {
-    console.log(Tournament.owner);
-    const markup = `
-        <div class="tournament_item" id="${new Date().getTime()}">
-          <div class="tournament_item_body">
-            <h3>
-              <span class="tournament_item_name">${Tournament.name}</span>
-            </h3>
-            <p>
-              Тип: <span class="tournament_item_type">${Tournament.type}</span>
-            </p>
-            <p>
-              Организатор: <span ${Tournament.owner === undefined ? "class=\"tournament_item_poor_owner\"" : "class=\"tournament_item_owner\""}>${Tournament.owner}</span>
-            </p>
-          </div>
-          <p class="delete_output_item_button">
-            Удалить
-          </p>
-        </div>
-      `;
-    dataContainer.insertAdjacentHTML('beforeend', markup);
+const InitializeLogin = async (credentials) => {
+    let body = {
+        "email": credentials.login,
+        "password": credentials.password,
+    };
+
+    const loginUrl = baseAPIurl + "auth/signin";
+    const response = await fetch(loginUrl, {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify(body),
+    });
+    if ((await response).status == 201) {
+        let result = await response.json();
+        document.cookie = "auth_token=" + result.token;
+        const response_profile = await fetch(baseAPIurl + "auth/profile", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + getCookie('auth_token'),
+            }
+        });
+        console.log(await response_profile.json())
+        window.location.href = "http://localhost:8000/"
+    }
+    throw new Error((await response).message);
 }
 
 

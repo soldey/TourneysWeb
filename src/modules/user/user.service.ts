@@ -1,13 +1,11 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
-import { FindManyOptions, FindOneOptions, Repository, SaveOptions } from 'typeorm';
+import { FindOptionsWhere, Repository, SaveOptions } from 'typeorm';
 import { ErrorTypeEnum } from '../../common/enums/error-type.enum';
 import { PaginationUsersDto } from './dto/pagination-users.dto';
 import { SelectManyUsersDto } from './dto/select-many-users.dto';
-import { FindOptionsWhere } from 'typeorm';
-import { classToPlain, instanceToPlain } from 'class-transformer';
-import { FindOneOptionsDto } from '../../common/dto/find-one-options.dto';
+import { StatusEnum } from '../../common/enums/status.enum';
 
 @Injectable()
 export class UserService {
@@ -21,7 +19,7 @@ export class UserService {
     options: SaveOptions = { transaction: false },
   ): Promise<UserEntity> {
     return this.userEntityRepository.manager.transaction(async () => {
-      const entity = this.userEntityRepository.create(entityLike);
+      const entity = this.userEntityRepository.create({ ...entityLike, status: StatusEnum.ACTIVATED });
       return this.userEntityRepository.save(entity, options).catch(() => {
         throw new ConflictException(ErrorTypeEnum.USER_ALREADY_EXISTS)
       });
@@ -29,10 +27,13 @@ export class UserService {
   }
 
   public async selectOne(
-    conditions: FindOneOptions<UserEntity>,
+    conditions: Partial<UserEntity>,
   ): Promise<UserEntity> {
     return this.userEntityRepository
-      .findOneOrFail({...conditions})
+      .findOneOrFail({
+        where: conditions as unknown as FindOptionsWhere<UserEntity>,
+        relations: ['teams']
+      })
       .catch(() => {
         throw new NotFoundException(ErrorTypeEnum.USER_NOT_FOUND);
       });
@@ -51,7 +52,7 @@ export class UserService {
   }
 
   public async updateOne(
-    conditions: FindOneOptions<UserEntity>,
+    conditions: Partial<UserEntity>,
     entityLike: Partial<UserEntity>,
     options: SaveOptions = { transaction: false }
   ): Promise<UserEntity> {
@@ -65,7 +66,7 @@ export class UserService {
   }
 
   public async deleteOne(
-    conditions: FindOneOptions<UserEntity>,
+    conditions: Partial<UserEntity>,
   ): Promise<UserEntity> {
     return this.updateOne(conditions, { isDeleted: true });
   }

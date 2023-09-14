@@ -7,12 +7,14 @@ import { ConfigService } from './config';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import * as cookieParser from 'cookie-parser';
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   const validationPipe = new ValidationPipe({
     forbidNonWhitelisted: true,
-    forbidUnknownValues: true,
+    forbidUnknownValues: false,
     whitelist: true,
     transform: true,
     transformOptions: {
@@ -20,7 +22,12 @@ async function bootstrap() {
     },
   });
 
-  // app.setGlobalPrefix(configService.get('PREFIX'));
+  app.enableCors({
+    credentials: configService.get('CORS_CREDENTIALS'),
+    origin: configService.get('CORS_ORIGIN'),
+  });
+
+  app.use(cookieParser());
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
@@ -30,6 +37,7 @@ async function bootstrap() {
     const config = new DocumentBuilder()
       .setVersion(configService.get('npm_package_version'))
       .setTitle(configService.get('npm_package_name'))
+      .addBearerAuth()
       .build();
 
     const document = SwaggerModule.createDocument(app, config);

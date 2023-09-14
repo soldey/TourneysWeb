@@ -1,17 +1,29 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from './config';
+import { ConfigModule } from './config/config.module';
 import { IndexModule } from './modules/index/index.module';
 import { CommonModule } from './common/common.module';
-import { DatabaseModule } from './database';
-import { UserModule } from './modules/user';
+import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { TournamentModule } from './modules/tournament/tournament.module';
+import { APP_FILTER } from '@nestjs/core';
+import { NotFoundExceptionFilter } from './common/not-found-exception.filter';
+import { MonitorModule } from './modules/monitor/monitor.module';
 
 @Module({
   imports: [
     CommonModule,
     ConfigModule,
     IndexModule,
+    MonitorModule,
     DatabaseModule,
-    UserModule
+    AuthModule,
+    TournamentModule,
+  ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: NotFoundExceptionFilter,
+    },
   ],
 })
 export class AppModule {}

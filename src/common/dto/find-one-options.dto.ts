@@ -1,7 +1,7 @@
 import { IsArray, IsBooleanString, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
 import { FindOneOptions } from 'typeorm';
 import { Expose, Transform } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 /**
  * [description]
@@ -15,7 +15,7 @@ export class FindOneOptionsDto<Entity> implements FindOneOptions {
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   @Transform(({ value }) => [].concat(value))
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: [String],
     description: 'Specifies what columns should be retrieved',
   })
@@ -26,7 +26,7 @@ export class FindOneOptionsDto<Entity> implements FindOneOptions {
    */
   @IsOptional()
   @IsBooleanString()
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: 'boolean',
     description: 'Indicates what relations of entity should be loaded',
   })
@@ -45,13 +45,13 @@ export class FindOneOptionsDto<Entity> implements FindOneOptions {
    */
   @IsOptional()
   @Min(0)
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: 'Enables or disables query result caching',
   })
   public readonly cache?: number = null;
 
   @IsOptional()
-  @ApiProperty({ type: Boolean, description: 'Makes query to select existing entities' })
+  @ApiPropertyOptional({ type: Boolean, description: 'Makes query to select existing entities' })
   public readonly isDeleted?: boolean = false;
 }
